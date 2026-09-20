@@ -18,6 +18,8 @@ public class MenuTreeVO implements Serializable {
     private Long id;
     private Long parentId;
     private String menuName;
+    /** 菜单类型：1=菜单 2=按钮（菜单管理页的类型标签用） */
+    private Integer menuType;
     private String path;
     private String component;
     private String icon;

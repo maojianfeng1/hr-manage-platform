@@ -74,6 +74,7 @@ public class MenuServiceImpl implements MenuService {
         v.setId(m.getId());
         v.setParentId(m.getParentId());
         v.setMenuName(m.getMenuName());
+        v.setMenuType(m.getMenuType());
         v.setPath(m.getPath());
         v.setComponent(m.getComponent());
         v.setIcon(m.getIcon());
