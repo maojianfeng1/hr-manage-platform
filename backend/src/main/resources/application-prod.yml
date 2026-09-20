@@ -1,0 +1,12 @@
+spring:
+  datasource:
+    # 生产环境通常从环境变量/配置中心读取，这里用占位符示例
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: ${HR_DB_URL:jdbc:mysql://localhost:3306/hr_manage?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai}
+    username: ${HR_DB_USERNAME:root}
+    password: ${HR_DB_PASSWORD:123456}
+
+logging:
+  level:
+    root: warn
+    com.hr: info

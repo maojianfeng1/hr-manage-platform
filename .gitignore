@@ -1,0 +1,35 @@
+# ===== 后端（Maven / Java / Spring Boot）=====
+backend/target/
+backend/*.class
+backend/*.jar
+backend/*.war
+backend/*.log
+backend/.idea/
+backend/*.iml
+backend/*.ipr
+backend/*.iws
+backend/out/
+
+# ===== 前端（Node / Vue / Vite）=====
+frontend/node_modules/
+frontend/dist/
+frontend/dist-ssr/
+frontend/.vscode/
+frontend/*.local
+
+# ===== 系统 / 编辑器通用 =====
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+.idea/
+*.iml
+
+# ===== 本地敏感 / 环境变量 =====
+*.env
+*.env.local
+*.env.*.local
+
+# 说明：backend/src/main/resources/application-dev.yml 包含本地数据库明文密码。
+# 若本仓库设为【公开】，请先把其中的密码改为占位符（如 ${DB_PASSWORD:root}）再提交；
+# 若设为【私有】仓库，可直接提交，仅你本人可见。

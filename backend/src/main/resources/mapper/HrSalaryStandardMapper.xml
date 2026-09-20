@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hr.mapper.HrSalaryStandardMapper">
+    <sql id="Base_Column_List">
+        id, employee_id, base_salary, post_salary, perf_salary, social_base, fund_base, bank_card, create_time, update_time, is_deleted
+    </sql>
+    <sql id="Where_Clause">
+        WHERE is_deleted = 0
+        <if test="q.employeeId != null">
+            AND employee_id = #{q.employeeId}
+        </if>
+    </sql>
+    <select id="selectPage" resultType="HrSalaryStandard">
+        SELECT <include refid="Base_Column_List"/> FROM hr_salary_standard
+        <include refid="Where_Clause"/> ORDER BY id ASC LIMIT #{offset}, #{q.size}
+    </select>
+    <select id="selectCount" resultType="long">
+        SELECT COUNT(*) FROM hr_salary_standard <include refid="Where_Clause"/>
+    </select>
+    <select id="selectByEmployeeId" resultType="HrSalaryStandard">
+        SELECT <include refid="Base_Column_List"/> FROM hr_salary_standard
+        WHERE employee_id = #{employeeId} AND is_deleted = 0
+    </select>
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO hr_salary_standard (employee_id, base_salary, post_salary, perf_salary, social_base, fund_base, bank_card)
+        VALUES (#{employeeId}, #{baseSalary}, #{postSalary}, #{perfSalary}, #{socialBase}, #{fundBase}, #{bankCard})
+    </insert>
+    <update id="update">
+        UPDATE hr_salary_standard
+        SET base_salary = #{baseSalary}, post_salary = #{postSalary}, perf_salary = #{perfSalary},
+        social_base = #{socialBase}, fund_base = #{fundBase}, bank_card = #{bankCard}
+        WHERE id = #{id} AND is_deleted = 0
+    </update>
+</mapper>

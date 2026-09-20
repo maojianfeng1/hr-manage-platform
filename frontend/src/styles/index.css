@@ -1,0 +1,65 @@
+/* 全局基础样式：清掉浏览器默认边距，统一字体 */
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#app {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', Roboto, sans-serif;
+  font-size: 14px;
+  color: #1f2d3d;
+  background-color: #f5f7fa;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+/* ---------- 业务系统通用抛光（全局，覆盖所有页面） ---------- */
+
+/* 卡片：统一圆角与细边框，贴近企业后台风格 */
+.el-card {
+  border-radius: 8px;
+  border: 1px solid #e8edf3;
+  box-shadow: 0 1px 4px rgba(31, 45, 61, 0.05) !important;
+}
+.el-card__body { padding: 16px; }
+
+/* 表格：浅色表头 + 行悬浮，阅读更省力 */
+.el-table {
+  --el-table-header-bg-color: #f7f9fc;
+  --el-table-header-text-color: #5a6a80;
+  --el-table-row-hover-bg-color: #f2f7fd;
+}
+.el-table th.el-table__cell {
+  font-weight: 600;
+  font-size: 13px;
+}
+
+/* 分页器右对齐，贴合操作栏习惯 */
+.el-pagination {
+  justify-content: flex-end;
+  margin-top: 12px;
+}
+
+/* 对话框 / 消息框圆角 */
+.el-dialog,
+.el-message-box {
+  border-radius: 10px;
+}
+
+/* 按钮与输入框：轻微圆角，视觉更稳 */
+.el-button { border-radius: 6px; }
+.el-input__wrapper { border-radius: 6px; }
+
+/* 页面标题区（各业务页顶部搜索卡片之间）统一留白节奏 */
+.el-form--inline .el-form-item { margin-right: 16px; }
+

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hr.mapper.SysRoleMapper">
+
+    <sql id="Base_Column_List">
+        id, role_key, role_name, remark
+    </sql>
+
+    <select id="selectAll" resultType="SysRole">
+        SELECT <include refid="Base_Column_List"/>
+        FROM sys_role WHERE is_deleted = 0 ORDER BY id ASC
+    </select>
+
+    <select id="selectById" resultType="SysRole">
+        SELECT <include refid="Base_Column_List"/>
+        FROM sys_role WHERE id = #{id} AND is_deleted = 0
+    </select>
+
+    <select id="countByKey" resultType="long">
+        SELECT COUNT(*) FROM sys_role
+        WHERE is_deleted = 0 AND role_key = #{roleKey}
+        <if test="exceptId != null"> AND id &lt;&gt; #{exceptId} </if>
+    </select>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO sys_role (role_key, role_name, remark)
+        VALUES (#{roleKey}, #{roleName}, #{remark})
+    </insert>
+
+    <update id="update">
+        UPDATE sys_role SET role_key = #{roleKey}, role_name = #{roleName}, remark = #{remark}
+        WHERE id = #{id} AND is_deleted = 0
+    </update>
+
+    <update id="logicDelete">
+        UPDATE sys_role SET is_deleted = 1 WHERE id = #{id} AND is_deleted = 0
+    </update>
+
+    <insert id="insertRoleMenu">
+        INSERT INTO sys_role_menu (role_id, menu_id) VALUES (#{roleId}, #{menuId})
+    </insert>
+
+    <delete id="deleteRoleMenu">
+        DELETE FROM sys_role_menu WHERE role_id = #{roleId}
+    </delete>
+
+    <select id="selectMenuIdsByRoleId" resultType="long">
+        SELECT menu_id FROM sys_role_menu WHERE role_id = #{roleId}
+    </select>
+
+    <delete id="deleteUserRoleByRoleId">
+        DELETE FROM sys_user_role WHERE role_id = #{roleId}
+    </delete>
+</mapper>

@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hr.mapper.HrPayrollMapper">
+
+    <sql id="Base_Column_List">
+        id, employee_id, salary_month, emp_name, dept_name, post_name,
+        base_salary, post_salary, perf_salary, overtime_pay, attendance_deduct,
+        gross_pay, social_personal, fund_personal, tax, net_pay,
+        remark, create_time, update_time, is_deleted
+    </sql>
+
+    <sql id="Where_Clause">
+        WHERE is_deleted = 0
+        <if test="q.employeeId != null">
+            AND employee_id = #{q.employeeId}
+        </if>
+        <if test="q.salaryMonth != null and q.salaryMonth != ''">
+            AND salary_month = #{q.salaryMonth}
+        </if>
+        <if test="q.empName != null and q.empName != ''">
+            AND emp_name LIKE CONCAT('%', #{q.empName}, '%')
+        </if>
+    </sql>
+
+
+    <select id="selectSource" resultType="PayrollSourceVO">
+        SELECT e.name AS empName, d.dept_name AS deptName, p.post_name AS postName
+        FROM hr_employee e
+        LEFT JOIN hr_department d ON e.dept_id = d.id
+        LEFT JOIN hr_position p ON e.post_id = p.id
+        WHERE e.id = #{employeeId} AND e.is_deleted = 0
+    </select>
+
+
+    <select id="selectAttendanceSummary" resultType="AttendanceSummaryVO">
+        SELECT
+        COALESCE(SUM(overtime_hours), 0)                                          AS overtimeHours,
+        COALESCE(SUM(CASE WHEN status = 'LATE'   THEN 1 ELSE 0 END), 0)           AS lateCount,
+        COALESCE(SUM(CASE WHEN status = 'EARLY'  THEN 1 ELSE 0 END), 0)           AS earlyCount,
+        COALESCE(SUM(CASE WHEN status = 'ABSENT' THEN 1 ELSE 0 END), 0)           AS absentCount,
+        COALESCE(SUM(CASE WHEN status = 'LEAVE' AND leave_type = 1 THEN 1 ELSE 0 END), 0) AS shijiaCount,
+        COALESCE(SUM(CASE WHEN status = 'LEAVE' AND leave_type = 2 THEN 1 ELSE 0 END), 0) AS bingjiaCount
+        FROM hr_attendance
+        WHERE employee_id = #{employeeId}
+        AND DATE_FORMAT(attend_date, '%Y-%m') = #{month}
+        AND is_deleted = 0
+    </select>
+
+    <select id="selectPage" resultType="HrPayroll">
+        SELECT <include refid="Base_Column_List"/> FROM hr_payroll
+        <include refid="Where_Clause"/>
+        ORDER BY salary_month DESC, id DESC
+        LIMIT #{offset}, #{q.size}
+    </select>
+
+    <select id="selectCount" resultType="long">
+        SELECT COUNT(*) FROM hr_payroll <include refid="Where_Clause"/>
+    </select>
+
+    <select id="selectByEmpMonth" resultType="HrPayroll">
+        SELECT <include refid="Base_Column_List"/> FROM hr_payroll
+        WHERE employee_id = #{employeeId} AND salary_month = #{salaryMonth} AND is_deleted = 0
+    </select>
+
+    <select id="selectById" resultType="HrPayroll">
+        SELECT <include refid="Base_Column_List"/> FROM hr_payroll WHERE id = #{id} AND is_deleted = 0
+    </select>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO hr_payroll (employee_id, salary_month, emp_name, dept_name, post_name,
+        base_salary, post_salary, perf_salary, overtime_pay, attendance_deduct,
+        gross_pay, social_personal, fund_personal, tax, net_pay, remark)
+        VALUES (#{employeeId}, #{salaryMonth}, #{empName}, #{deptName}, #{postName},
+        #{baseSalary}, #{postSalary}, #{perfSalary}, #{overtimePay}, #{attendanceDeduct},
+        #{grossPay}, #{socialPersonal}, #{fundPersonal}, #{tax}, #{netPay}, #{remark})
+    </insert>
+
+    <update id="update">
+        UPDATE hr_payroll
+        SET employee_id = #{employeeId}, salary_month = #{salaryMonth}, emp_name = #{empName},
+        dept_name = #{deptName}, post_name = #{postName}, base_salary = #{baseSalary},
+        post_salary = #{postSalary}, perf_salary = #{perfSalary}, overtime_pay = #{overtimePay},
+        attendance_deduct = #{attendanceDeduct}, gross_pay = #{grossPay},
+        social_personal = #{socialPersonal}, fund_personal = #{fundPersonal},
+        tax = #{tax}, net_pay = #{netPay}, remark = #{remark}
+        WHERE id = #{id} AND is_deleted = 0
+    </update>
+
+    <update id="logicDelete">
+        UPDATE hr_payroll SET is_deleted = 1 WHERE id = #{id} AND is_deleted = 0
+    </update>
+</mapper>

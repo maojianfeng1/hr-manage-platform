@@ -1,0 +1,29 @@
+server:
+  port: 8080
+  servlet:
+    encoding:
+      charset: UTF-8
+      force: true
+
+spring:
+  application:
+    name: hr-manage-backend
+  profiles:
+    active: dev            # 默认启用开发环境配置（见 application-dev.yml）
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+    default-property-inclusion: non_null   # 为 null 的字段不返回给前端，减少冗余
+
+mybatis:
+  mapper-locations: classpath:mapper/*.xml   # XML 映射文件位置
+  configuration:
+    map-underscore-to-camel-case: true        # 数据库下划线字段自动转 Java 驼峰属性
+  type-aliases-package: com.hr.entity,com.hr.vo   # 实体类 + VO 别名，XML 里 resultType 可直接写类名
+
+hr:
+  jwt:
+    secret: hrManagePlatformSecretKey_2026_MaoJianFeng_Java21_SpringBoot32
+    expire-seconds: 7200        # 令牌有效期：2 小时
+    header: Authorization       # 前端把 token 放在哪个请求头
+    prefix: "Bearer "           # token 前缀，标准 JWT 写法

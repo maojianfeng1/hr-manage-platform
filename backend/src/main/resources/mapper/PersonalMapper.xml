@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hr.mapper.PersonalMapper">
+
+    <select id="selectEmployeeById" resultType="HrEmployee">
+        SELECT * FROM hr_employee WHERE id = #{id} AND is_deleted = 0
+    </select>
+
+    <select id="selectAttendanceByEmpId" resultType="HrAttendance">
+        SELECT * FROM hr_attendance
+        WHERE employee_id = #{empId}
+          AND DATE_FORMAT(attend_date, '%Y-%m') = #{month}
+          AND is_deleted = 0
+        ORDER BY attend_date
+    </select>
+
+    <select id="selectPayrollByEmpId" resultType="HrPayroll">
+        SELECT * FROM hr_payroll
+        WHERE employee_id = #{empId} AND is_deleted = 0
+        ORDER BY salary_month DESC
+    </select>
+
+</mapper>

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?><!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hr.mapper.HrAttendanceMapper">
+    <sql id="Base_Column_List">
+        id, employee_id, emp_name, dept_id, attend_date, clock_in, clock_out, status, leave_type, overtime_hours, remark, create_time, update_time, is_deleted
+    </sql>
+    <sql id="Where_Clause">
+        WHERE is_deleted = 0
+        <if test="q.employeeId != null">
+            AND employee_id = #{q.employeeId}
+        </if>
+        <if test="q.empName != null and q.empName != ''">
+            AND emp_name LIKE CONCAT('%', #{q.empName}, '%')
+        </if>
+        <if test="q.deptId != null">
+            AND dept_id = #{q.deptId}
+        </if>
+        <if test="q.status != null and q.status != ''">
+            AND status = #{q.status}
+        </if>
+        <if test="q.month != null and q.month != ''">
+            AND DATE_FORMAT(attend_date, '%Y-%m') = #{q.month}
+        </if>
+    </sql>
+    <select id="selectPage" resultType="HrAttendance">
+        SELECT <include refid="Base_Column_List"/> FROM hr_attendance
+        <include refid="Where_Clause"/>
+        ORDER BY attend_date DESC, id ASC LIMIT #{offset}, #{q.size}
+    </select>
+    <select id="selectCount" resultType="long">
+        SELECT COUNT(*) FROM hr_attendance <include refid="Where_Clause"/>
+    </select>
+    <select id="selectById" resultType="HrAttendance">
+        SELECT <include refid="Base_Column_List"/> FROM hr_attendance WHERE id = #{id} AND is_deleted = 0
+    </select>
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO hr_attendance (employee_id, emp_name, dept_id, attend_date, clock_in, clock_out,
+        status, leave_type, overtime_hours, remark)
+        VALUES (#{employeeId}, #{empName}, #{deptId}, #{attendDate}, #{clockIn}, #{clockOut},
+        #{status}, #{leaveType}, #{overtimeHours}, #{remark})
+    </insert>
+    <update id="update">
+        UPDATE hr_attendance
+        SET employee_id = #{employeeId}, emp_name = #{empName}, dept_id = #{deptId},
+        attend_date = #{attendDate}, clock_in = #{clockIn}, clock_out = #{clockOut},
+        status = #{status}, leave_type = #{leaveType}, overtime_hours = #{overtimeHours}, remark = #{remark}
+        WHERE id = #{id} AND is_deleted = 0
+    </update>
+    <update id="logicDelete">
+        UPDATE hr_attendance SET is_deleted = 1 WHERE id = #{id} AND is_deleted = 0
+    </update>
+</mapper>

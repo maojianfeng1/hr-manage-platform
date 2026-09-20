@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hr.mapper.HrEmployeeMapper">
+    <sql id="Base_Column_List">
+        id, emp_code, name, gender, phone, email, id_card, dept_id, post_id, job_level,
+        entry_date, regular_date, status, education, avatar, bank_card, address, create_time, update_time, is_deleted
+    </sql>
+    <sql id="Where_Clause">
+        WHERE is_deleted = 0
+        <if test="q.empCode != null and q.empCode != ''">
+            AND emp_code LIKE CONCAT('%', #{q.empCode}, '%')
+        </if>
+        <if test="q.name != null and q.name != ''">
+            AND name LIKE CONCAT('%', #{q.name}, '%')
+        </if>
+        <if test="q.deptId != null">
+            AND dept_id = #{q.deptId}
+        </if>
+        <if test="q.status != null">
+            AND status = #{q.status}
+        </if>
+        <if test="q.employeeId != null">
+            AND id = #{q.employeeId}
+        </if>
+    </sql>
+    <select id="selectPage" resultType="HrEmployee">
+        SELECT <include refid="Base_Column_List"/> FROM hr_employee
+        <include refid="Where_Clause"/>
+        ORDER BY id ASC LIMIT #{offset}, #{q.size}
+    </select>
+    <select id="selectCount" resultType="long">
+        SELECT COUNT(*) FROM hr_employee <include refid="Where_Clause"/>
+    </select>
+    <select id="selectById" resultType="HrEmployee">
+        SELECT <include refid="Base_Column_List"/> FROM hr_employee WHERE id = #{id} AND is_deleted = 0
+    </select>
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO hr_employee (emp_code, name, gender, phone, email, id_card, dept_id, post_id,
+        job_level, entry_date, regular_date, status, education, avatar, bank_card, address)
+        VALUES (#{empCode}, #{name}, #{gender}, #{phone}, #{email}, #{idCard}, #{deptId}, #{postId},
+        #{jobLevel}, #{entryDate}, #{regularDate}, #{status}, #{education}, #{avatar}, #{bankCard}, #{address})
+    </insert>
+    <update id="update">
+        UPDATE hr_employee
+        SET emp_code = #{empCode}, name = #{name}, gender = #{gender}, phone = #{phone},
+        email = #{email}, id_card = #{idCard}, dept_id = #{deptId}, post_id = #{postId},
+        job_level = #{jobLevel}, entry_date = #{entryDate}, regular_date = #{regularDate},
+        status = #{status}, education = #{education}, avatar = #{avatar},
+        bank_card = #{bankCard}, address = #{address}
+        WHERE id = #{id} AND is_deleted = 0
+    </update>
+    <update id="logicDelete">
+        UPDATE hr_employee SET is_deleted = 1 WHERE id = #{id} AND is_deleted = 0
+    </update>
+    <select id="selectByStatus" resultType="HrEmployee">
+        SELECT <include refid="Base_Column_List"/> FROM hr_employee
+        WHERE is_deleted = 0 AND status = #{status}
+        ORDER BY id ASC
+    </select>
+</mapper>

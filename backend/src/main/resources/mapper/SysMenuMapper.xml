@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hr.mapper.SysMenuMapper">
+
+    <select id="selectAll" resultType="SysMenu">
+        SELECT id, parent_id, menu_name, menu_type, perms, path, component, icon, sort
+        FROM sys_menu
+        WHERE is_deleted = 0
+        ORDER BY sort ASC, id ASC
+    </select>
+
+    <insert id="insert" parameterType="SysMenu" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO sys_menu (parent_id, menu_name, menu_type, perms, path, component, icon, sort)
+        VALUES (#{parentId}, #{menuName}, #{menuType}, #{perms}, #{path}, #{component}, #{icon}, #{sort})
+    </insert>
+
+    <update id="updateById" parameterType="SysMenu">
+        UPDATE sys_menu
+        SET parent_id  = #{parentId},
+            menu_name = #{menuName},
+            menu_type = #{menuType},
+            perms     = #{perms},
+            path      = #{path},
+            component = #{component},
+            icon      = #{icon},
+            sort      = #{sort}
+        WHERE id = #{id}
+    </update>
+
+    <update id="deleteById">
+        UPDATE sys_menu SET is_deleted = 1 WHERE id = #{id}
+    </update>
+
+    <select id="selectById" resultType="SysMenu">
+        SELECT id, parent_id, menu_name, menu_type, perms, path, component, icon, sort
+        FROM sys_menu WHERE id = #{id}
+    </select>
+
+    <select id="countByParentId" resultType="int">
+        SELECT COUNT(1) FROM sys_menu WHERE parent_id = #{parentId} AND is_deleted = 0
+    </select>
+</mapper>
