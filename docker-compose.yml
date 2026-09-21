@@ -1,0 +1,29 @@
+# HR 管理系统 · Docker 编排（连宿主机已运行的 MySQL，不另起 MySQL 容器）
+# 适用：本机 D:\develop\mysql-8.0.34 已在跑、hr_manage 数据齐全，直接复用。
+# 访问：浏览器 http://localhost:8081  →  前端登录页（admin / 123456）
+services:
+  backend:
+    build: ./backend
+    container_name: hr-backend
+    restart: always
+    # 宿主 8080 被本地 IDEA 后端占用，这里映射到 8085 避开冲突；容器内部仍是 8080
+    ports:
+      - "8085:8080"
+    environment:
+      # 覆盖 application-dev.yml 里的 localhost:3306，改用宿主机 MySQL
+      # Windows/Mac 的 Docker Desktop 原生支持 host.docker.internal 指向宿主机
+      SPRING_DATASOURCE_URL: "jdbc:mysql://host.docker.internal:3306/hr_manage?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true&useSSL=false"
+      SPRING_DATASOURCE_USERNAME: "root"
+      SPRING_DATASOURCE_PASSWORD: "123456"
+      SERVER_PORT: "8080"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  frontend:
+    build: ./frontend
+    container_name: hr-frontend
+    restart: always
+    ports:
+      - "8081:80"   # 浏览器访问 http://localhost:8081
+    depends_on:
+      - backend
