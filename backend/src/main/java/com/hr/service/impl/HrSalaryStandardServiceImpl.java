@@ -46,6 +46,11 @@ public class HrSalaryStandardServiceImpl implements HrSalaryStandardService {
 
     @Override
     public HrSalaryStandard getByEmployeeId(Long employeeId) {
+        // 行级数据权限：普通员工只能看自己的薪资档案（薪酬保密）
+        Long selfId = selfEmployeeId();
+        if (selfId != null && !selfId.equals(employeeId)) {
+            throw new BusinessException("无权查看该薪资档案");
+        }
         HrSalaryStandard s = mapper.selectByEmployeeId(employeeId);
         if (s == null) throw new BusinessException("该员工尚未设置薪资档案");
         return s;

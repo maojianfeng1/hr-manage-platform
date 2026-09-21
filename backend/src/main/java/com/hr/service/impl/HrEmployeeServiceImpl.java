@@ -48,6 +48,11 @@ public class HrEmployeeServiceImpl implements HrEmployeeService {
     public HrEmployee detail(Long id) {
         HrEmployee e = mapper.selectById(id);
         if (e == null) throw new BusinessException("员工不存在");
+        // 行级数据权限：普通员工只能看自己（hr_employee 身份即主键 id）
+        Long selfId = selfEmployeeId();
+        if (selfId != null && !selfId.equals(e.getId())) {
+            throw new BusinessException("无权查看该员工档案");
+        }
         return e;
     }
 

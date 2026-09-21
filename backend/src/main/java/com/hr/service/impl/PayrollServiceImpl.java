@@ -65,6 +65,11 @@ public class PayrollServiceImpl implements PayrollService {
     public HrPayroll detail(Long id) {
         HrPayroll p = payrollMapper.selectById(id);
         if (p == null) throw new BusinessException("工资单不存在");
+        // 行级数据权限：普通员工只能看自己的工资单（薪酬保密）
+        Long selfId = selfEmployeeId();
+        if (selfId != null && !selfId.equals(p.getEmployeeId())) {
+            throw new BusinessException("无权查看该工资单");
+        }
         return p;
     }
 

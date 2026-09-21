@@ -68,6 +68,11 @@ public class HrAttendanceServiceImpl implements HrAttendanceService {
     public HrAttendance detail(Long id) {
         HrAttendance a = mapper.selectById(id);
         if (a == null) throw new BusinessException("考勤记录不存在");
+        // 行级数据权限：普通员工只能看自己的考勤
+        Long selfId = selfEmployeeId();
+        if (selfId != null && !selfId.equals(a.getEmployeeId())) {
+            throw new BusinessException("无权查看该考勤记录");
+        }
         return a;
     }
 

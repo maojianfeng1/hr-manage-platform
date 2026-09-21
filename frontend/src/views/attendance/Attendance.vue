@@ -1,4 +1,3 @@
-```vue
 <template>
   <div class="page">
     <el-form :inline="true" :model="query" class="search-bar">
@@ -148,4 +147,3 @@ onMounted(() => { loadOptions(); loadData() })
 .search-bar { background: #fff; padding: 16px; border-radius: 8px; margin-bottom: 12px; }
 .pager { margin-top: 12px; justify-content: flex-end; }
 </style>
-```

@@ -278,7 +278,9 @@ INSERT INTO sys_menu (id, parent_id, menu_name, menu_type, perms, path, componen
 (15, 0, '薪酬管理',   1, 'sal:view',            '/salary',         'salary',        'money',   5),
 (16, 15,'薪资档案编辑',2, 'sal:standard:edit',  '',               '',              '',        1),
 (17, 15,'工资单生成', 2, 'sal:payroll:edit',    '',               '',              '',        1),
-(18, 0, '数据看板',   1, 'dashboard:view',      '/dashboard',      'dashboard',     'chart',   6);
+(18, 0, '数据看板',   1, 'dashboard:view',      '/dashboard',      'dashboard',     'chart',   6),
+(19, 1, '菜单管理',   1, 'system:menu:view',    '/system/menu',    'system/menu',   'menu',    3),
+(20, 19,'菜单编辑',   2, 'system:menu:edit',    '',                '',              '',        1);
 
 -- 3) 角色授权
 -- 管理员：全部
@@ -288,7 +290,8 @@ SELECT 1, id FROM sys_menu;
 -- 人事：除「系统管理」相关(系统管理目录及其子菜单)外全部
 INSERT INTO sys_role_menu (role_id, menu_id)
 SELECT 2, id FROM sys_menu
-WHERE perms NOT IN ('system:view', 'system:user:view', 'system:role:view');
+WHERE perms NOT IN ('system:view', 'system:user:view', 'system:role:view',
+                   'system:user:add', 'system:role:edit', 'system:user:edit');
 
 -- 普通员工：仅看板、员工、考勤、薪酬四个业务页（数据按当前用户过滤只显示本人）
 INSERT INTO sys_role_menu (role_id, menu_id)
