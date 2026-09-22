@@ -5,7 +5,9 @@ import com.hr.context.UserContext;
 import com.hr.dto.HrEmployeeQueryDTO;
 import com.hr.entity.HrEmployee;
 import com.hr.entity.SysUser;
+import com.hr.mapper.HrAttendanceMapper;
 import com.hr.mapper.HrEmployeeMapper;
+import com.hr.mapper.HrPayrollMapper;
 import com.hr.mapper.SysUserMapper;
 import com.hr.service.HrEmployeeService;
 import lombok.extern.slf4j.Slf4j;
@@ -17,10 +19,17 @@ public class HrEmployeeServiceImpl implements HrEmployeeService {
 
     private final HrEmployeeMapper mapper;
     private final SysUserMapper sysUserMapper;
+    private final HrAttendanceMapper attendanceMapper;
+    private final HrPayrollMapper payrollMapper;
 
-    public HrEmployeeServiceImpl(HrEmployeeMapper mapper, SysUserMapper sysUserMapper) {
+    public HrEmployeeServiceImpl(HrEmployeeMapper mapper,
+                                 SysUserMapper sysUserMapper,
+                                 HrAttendanceMapper attendanceMapper,
+                                 HrPayrollMapper payrollMapper) {
         this.mapper = mapper;
         this.sysUserMapper = sysUserMapper;
+        this.attendanceMapper = attendanceMapper;
+        this.payrollMapper = payrollMapper;
     }
 
     /** 当前登录用户若是普通员工，返回其 employee_id；否则返回 null */
@@ -66,8 +75,15 @@ public class HrEmployeeServiceImpl implements HrEmployeeService {
     @Override
     public void update(HrEmployee e) {
         if (e.getId() == null) throw new BusinessException("ID 不能为空");
-        if (mapper.selectById(e.getId()) == null) throw new BusinessException("员工不存在");
+        HrEmployee old = mapper.selectById(e.getId());
+        if (old == null) throw new BusinessException("员工不存在");
         mapper.update(e);
+        // 姓名快照级联刷新：员工改名后，同步更新其历史考勤/工资单记录中的姓名，
+        // 避免「员工管理改了名、考勤/薪酬页仍显示旧名」的不一致（全量同步策略）
+        if (old.getName() != null && !old.getName().equals(e.getName())) {
+            attendanceMapper.updateEmpNameByEmployeeId(e.getId(), e.getName());
+            payrollMapper.updateEmpNameByEmployeeId(e.getId(), e.getName());
+        }
     }
 
     @Override

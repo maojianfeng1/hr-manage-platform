@@ -26,4 +26,7 @@ public interface HrPayrollMapper {
     int insert(HrPayroll p);
     int update(HrPayroll p);
     int logicDelete(@Param("id") Long id);
+
+    /** 员工改名时级联刷新历史工资单中的姓名快照 */
+    int updateEmpNameByEmployeeId(@Param("employeeId") Long employeeId, @Param("empName") String empName);
 }

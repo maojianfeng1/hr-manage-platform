@@ -12,4 +12,7 @@ public interface HrAttendanceMapper {
     int insert(HrAttendance a);
     int update(HrAttendance a);
     int logicDelete(@Param("id") Long id);
+
+    /** 员工改名时级联刷新历史考勤记录中的姓名快照 */
+    int updateEmpNameByEmployeeId(@Param("employeeId") Long employeeId, @Param("empName") String empName);
 }

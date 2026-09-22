@@ -89,4 +89,9 @@
     <update id="logicDelete">
         UPDATE hr_payroll SET is_deleted = 1 WHERE id = #{id} AND is_deleted = 0
     </update>
+
+    <update id="updateEmpNameByEmployeeId">
+        UPDATE hr_payroll SET emp_name = #{empName}
+        WHERE employee_id = #{employeeId} AND is_deleted = 0
+    </update>
 </mapper>
