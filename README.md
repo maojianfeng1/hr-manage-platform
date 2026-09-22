@@ -7,8 +7,7 @@
 ### 后端
 - Java 21 / Spring Boot 3.2
 - MyBatis + MySQL 8.0
-- Redis（缓存 / 登录态）
-- JWT（无状态鉴权，HS256）+ BCrypt（密码加密）
+- JWT（无状态鉴权，HS256）+ BCrypt（密码加密）；登录态由客户端 LocalStorage 维护，后端以 ThreadLocal 上下文处理，无需 Redis 等缓存中间件
 - 统一返回结果、全局异常处理、自定义权限注解
 
 ### 前端
@@ -34,7 +33,6 @@
 ## 环境要求
 - JDK 21
 - MySQL 8.0（库名 `hr_manage`）
-- Redis 5+（默认端口 6379，无密码）
 - Node.js 18+
 
 ## 快速启动
@@ -43,9 +41,6 @@
 ```bash
 # 创建库并执行建表脚本
 mysql -uroot -p hr_manage < docs/02_数据库建表脚本.sql
-
-# 启动 Redis（Windows 示例）
-redis-server.exe --service-start
 ```
 
 ### 2. 后端
@@ -72,8 +67,8 @@ npm run dev
 > 首次启动由 `DataInitializer` 自动创建上述三个账号（密码统一 `123456`，BCrypt 加密入库）。
 
 ## 部署
-- **Docker 一键部署**：见 [docs/09_Docker部署手册.md](docs/09_Docker部署手册.md)（mysql + backend + frontend 三服务编排）。
-- **联调与部署说明**：见 [docs/08_联调测试与部署手册.md](docs/08_联调测试与部署手册.md)。
+- **容器化部署（Docker）**：见 [docs/DOCKER_容器化部署手册.md](docs/DOCKER_容器化部署手册.md)（mysql + backend + frontend 三服务编排）。
+- **部署与运维说明**：见 [docs/DEPLOY_部署与运维手册.md](docs/DEPLOY_部署与运维手册.md)。
 
 ## 目录结构
 ```
@@ -86,8 +81,10 @@ hr-manage-platform/
 ```
 
 ## 开发文档
-- `docs/01_需求文档.md`
-- `docs/02_数据库建表脚本.sql`
-- `docs/07_系统管理模块开发步骤.md`
-- `docs/08_联调测试与部署手册.md`
-- `docs/09_Docker部署手册.md`
+- `docs/SRS_需求规格说明书.md` — 需求规格说明书
+- `docs/API_接口设计文档.md` — 接口设计文档
+- `docs/DB_数据库设计说明书.md` — 数据库设计说明书
+- `docs/TEST_测试用例文档.md` — 测试用例文档
+- `docs/DEPLOY_部署与运维手册.md` — 部署与运维手册
+- `docs/DOCKER_容器化部署手册.md` — 容器化部署手册
+- `docs/02_数据库建表脚本.sql` — 数据库初始化脚本
